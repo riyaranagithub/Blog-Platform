@@ -6,7 +6,7 @@ function AllPosts() {
     const [posts,setPosts]=useState([])
     const [loading, setLoading] = React.useState(true);
     React.useEffect(() => {
-        appwriteService
+        dataService
           .getPosts([])
           .then((posts) => {
             if (posts) {

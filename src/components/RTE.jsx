@@ -9,19 +9,16 @@ function RTE({ name, control, label, defaultValue = "" }) {
       <Controller
         name={name || "content"}
         control={control}
-        render={({ field: { onChange } }) => (
+        defaultValue={defaultValue} // Ensure defaultValue is set
+        render={({ field: { onChange, value } }) => (
           <Editor
-          key={defaultValue}
-            initialValue={defaultValue}
+            apiKey="n645yplf9gr9ktq86qdyx8ie1mbo0fsbq9rbtj38az4lcd8y" // Your API key
+            value={value} // Bind editor value to form control
             init={{
               branding: false,
               height: 500,
               menubar: true,
-              plugins: [
-                "advlist autolink lists link image charmap print preview anchor",
-                "searchreplace visualblocks code fullscreen",
-                "insertdatetime media table paste code help wordcount",
-              ],
+             
               toolbar: [
                 "undo redo | styles | bold italic | link image",
                 "alignleft aligncenter alignright",
@@ -34,7 +31,7 @@ function RTE({ name, control, label, defaultValue = "" }) {
                 a:hover { text-decoration: underline; }
               `,
             }}
-            onEditorChange={onChange}
+            onEditorChange={(newValue) => onChange(newValue)} // Pass new value to onChange
           />
         )}
       />

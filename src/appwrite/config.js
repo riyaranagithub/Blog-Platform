@@ -130,7 +130,7 @@ export class databasesSerives {
   }
 
   getImagePreview(fileId) {
-    return this.bucket.getFilePreview(conf.appwriteBucketId, fileId);
+    return this.bucket.getImagePreview(conf.appwriteBucketId, fileId);
   }
 
   async updateFile(fileId, file) {

@@ -1,52 +1,57 @@
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import "./App.css";
+
 import authService from "./appwrite/auth";
 import { login, logOut } from "./store/authSlice";
-import { Footer, Header } from "./components";
+import { Footer, Header } from "./components/index";
 import { Outlet } from "react-router-dom";
-
 
 export default function App() {
   const [loading, setLoading] = useState(true);
   const dispatch = useDispatch();
 
- 
   useEffect(() => {
-    console.log("hello")
+    console.log("App mounted"); // Check if useEffect runs
     const fetchUser = async () => {
-     
       try {
+        console.log("Fetching user..."); // Check if fetchUser is called
         const userData = await authService.getCurrentUser();
+        console.log("User Data:", userData); // Check if userData is fetched
         if (userData) {
           dispatch(login(userData));
         } else {
           dispatch(logOut());
         }
       } catch (error) {
-        console.error("Error fetching user:", error);
+        console.error("Error fetching user:", error); // Log any errors
       } finally {
-        
         setLoading(false);
+        console.log("Loading state set to false"); // Confirm that loading is set
       }
     };
-  
+
     fetchUser();
   }, []);
-  
-
-  
 
   return !loading ? (
-    <main className="min-h-screen flex flex-wrap content-between bg-gray-400">
-      <div className="w-full block">
+    <div className="min-h-screen flex flex-col ">
+      {/* Header at the top */}
+      <header className="bg-gray-500">
         <Header />
+      </header>
+
+      {/* Main content in the middle */}
+      <main className="flex-grow bg-gray-100">
         <Outlet />
+      </main>
+
+      {/* Footer at the bottom */}
+      <footer className="bg-gray-500">
         <Footer />
-      </div>
-    </main>
+      </footer>
+    </div>
   ) : (
-    <div className="min-h-screen flex flex-wrap content-between bg-gray-600">
+    <div className="min-h-screen flex justify-center items-center bg-gray-600">
       Loading...
     </div>
   );

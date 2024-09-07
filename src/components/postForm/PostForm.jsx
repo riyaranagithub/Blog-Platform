@@ -16,8 +16,11 @@ function PostForm({post}) {
   const navigate=useNavigate()
   const userData=useSelector((state)=>state.auth.userData)
   console.log("UserData in PostForm : ", userData);
+
+  
   const submit =async(data)=>{
     if(post){
+      console.log("chala")
       const file=data.image[0]? dataService.uploadFile(data.image[0]):null
       if(file){
         dataService.deleteFile(post.featuredImage)
@@ -32,6 +35,7 @@ function PostForm({post}) {
         navigate(`/post/${dbpost.$id}`)
       }
       else {
+        console.log("ho gya")
         const file =  await dataService.uploadFile(data.image[0]);
         if(file){
           const fieldId=file.$id
