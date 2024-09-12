@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import dataService from "../appwrite/config";
-import { Container, PostForm } from "../components";
+import { PostForm } from "../components";
 
 function EditPost() {
   const [post, setPosts] = useState([]);
@@ -17,13 +17,13 @@ function EditPost() {
         }
       });
     }
-  }),
-    [slug, navigate];
+  },[slug, navigate])
+    
   return post ? (
     <div>
-      <Container>
+     
         <PostForm post={post} />
-      </Container>
+      
     </div>
   ) : null;
 }

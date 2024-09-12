@@ -70,6 +70,10 @@ function SignUp() {
             type="password"
             {...register("password", {
               required: true,
+              pattern: {
+                value: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d@#$%^&*!]{8,}$/,
+                message: "Password must be valid",
+              },
             })}
           />
           <Button type="submit" className="w-full">

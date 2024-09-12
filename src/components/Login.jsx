@@ -9,10 +9,13 @@ import { useForm } from "react-hook-form";
 function Login() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { register, handleSubmit } = useForm();
+  const { register, handleSubmit, formState: { errors } } = useForm();
   const [error, setError] = useState("");
 
+  console.log("Login is rendered");
+
   const login = async (data) => {
+    console.log("Checking login function execution");
     setError("");
     try {
       const session = await authService.login(data);
@@ -26,6 +29,7 @@ function Login() {
       setError(error.message);
     }
   };
+
   return (
     <div className="flex items-center justify-center w-full">
       <div className="mx-auto w-full max-w-lg bg-gray-100 rounded-lg p-10 border border-black/10">
@@ -37,63 +41,63 @@ function Login() {
         </h2>
 
         <p className="mt-2 text-center text-base text-black/60">
-          Don&apos;t have any account ? &nbsp;
+          Don&apos;t have any account?&nbsp;
           <Link
-            to="/singup"
-            className="font-medium text-primary-transition-all duration-200 hover:underline"
+            to="/signup"
+            className="font-medium text-primary transition-all duration-200 hover:underline"
           >
             Sign up
           </Link>
         </p>
+        
+        {/* Display error messages */}
         {error && <p className="text-red-600 mt-8 text-center">{error}</p>}
-      <form onSubmit={handleSubmit(login)} className="mt-8">
-        <div className="space-y-5">
-          <Input
-            label="Email: "
-            placeholder="Enter your email"
-            type="Email"
-            {...register("email", {
-              required: true,
-              validate: {
-                matchPatern: (value) =>
-                  /^[\w\.-]+@[a-zA-Z\d\.-]+\.[a-zA-Z]{2,}$/.test(value) ||
-                  "Email address must be valid",
-              },
-            })}
-          />
-          <Input
-            label="Password: "
-            placeholder="Enter your password"
-            type="password"
-            {...register("password", {
-              required: true,
-              validate: {
-                matchPatern: (value) =>
-                  /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/.test(value) ||
-                  "Password must be valid",
-              },
-            })}
-          />
-          <Button type="submit" className="w-full">
-            Sign in
-          </Button>
-        </div>
-      </form>
-      </div>
+        
+        <form onSubmit={handleSubmit(login)} className="mt-8">
+          <div className="space-y-5">
+            <Input
+              label="Email: "
+              placeholder="Enter your email"
+              type="email"
+              {...register("email", {
+                required: "Email is required",
+                pattern: {
+                  value: /^[\w\.-]+@[a-zA-Z\d\.-]+\.[a-zA-Z]{2,}$/,
+                  message: "Email address must be valid",
+                },
+              })}
+            />
+            {/* Display email validation error */}
+            {errors.email && (
+              <p className="text-red-600">{errors.email.message}</p>
+            )}
 
-    
+            <Input
+              label="Password: "
+              placeholder="Enter your password"
+              type="password"
+              {...register("password", {
+                required: "Password is required",
+                pattern: {
+                  value: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d@#$%^&*!]{8,}$/,
+                  message: "Password must be valid",
+                },
+              })}
+            />
+            {/* Display password validation error */}
+            {errors.password && (
+              <p className="text-red-600">{errors.password.message}</p>
+            )}
+
+            {/* Ensure the button has type="submit" */}
+            <Button type="submit" className="w-full bg-blue-500 text-white p-2 rounded">
+              Sign in
+            </Button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 }
 
 export default Login;
-
-
-// login:
-
-// An asynchronous function that handles the login process.
-// It clears any existing error messages with setError("").
-// Uses authService.login(data) to attempt login with the provided form data.
-// If successful, it retrieves the user data with authService.getCurrentUser() and dispatches the authlogin action to the Redux store.
-// It then navigates to the home page ("/").
-// If an error occurs, it catches the error and sets the error state to the error message.

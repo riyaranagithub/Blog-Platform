@@ -4,6 +4,7 @@ import {useForm } from 'react-hook-form'
 import dataService from '../../appwrite/config'
 import { useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
+import { data } from 'autoprefixer'
 function PostForm({post}) {
   const { register, handleSubmit, watch, setValue, control, getValues}=useForm({
     defaultValues:{
@@ -16,51 +17,59 @@ function PostForm({post}) {
   const navigate=useNavigate()
   const userData=useSelector((state)=>state.auth.userData)
   console.log("UserData in PostForm : ", userData);
+  console.log("Userid in PostForm : ", userData.userData.$id);
 
+  const submit = async (data) => {
+    console.log("submit is working");
   
-  const submit =async(data)=>{
-    if(post){
-      console.log("chala")
-      const file=data.image[0]? dataService.uploadFile(data.image[0]):null
-      if(file){
-        dataService.deleteFile(post.featuredImage)
+    // Check if the post exists for editing, otherwise create a new one
+    if (post) {
+      console.log("post is getting edited");
+      const file = data.image && data.image[0] ? await dataService.uploadFile(data.image[0]) : null;
+      
+      if (file) {
+        await dataService.deleteFile(post.featuredImage);
       }
-      const dbpost = await dataService.updatePost(
-        post.$id,{
-          ...data,
-          featuredImage:file? file.$id :undefined
-        }
-      )
-      if(dbpost){
-        navigate(`/post/${dbpost.$id}`)
+  
+      const dbpost = await dataService.updatePost(post.$id, {
+        ...data,
+        featuredImage: file ? file.$id : undefined,
+      });
+  
+      if (dbpost) {
+        navigate(`/post/${dbpost.$id}`);
       }
-      else {
-        console.log("ho gya")
-        const file =  await dataService.uploadFile(data.image[0]);
-        if(file){
-          const fieldId=file.$id
-          data.featuredImage=fieldId
-          console.log("Data before createPost : ", data);
-          const dbPost=await dataService.createPost({
-            ...data,
-            userId:userData.$id
-          })
-          if(dbPost){
-            navigate(`/post/${dbPost.$id}`)
-          }
-
+    } else {
+      console.log("post is getting created");
+      
+      if (data.image && data.image[0]) {
+        const file = await dataService.uploadFile(data.image[0]);
+        if (file) {
+          data.featuredImage = file.$id;
         }
+      }
+  
+      const dbPost = await dataService.createPost({
+        ...data,
+        userID: userData.userData.$id,
+      });
+  
+      if (dbPost) {
+        navigate(`/post/${dbPost.$id}`);
       }
     }
-  }
+  };
+  
 
   const transformSlug=useCallback((value)=>{
-    if(value && typeof value === 'string')
-      return value.
-      trim()
-      .toLowerCase()
-      .replace(/^[a-zA-Z\d\s]+/g,'-')
-      .replace(/\s/g,'-')
+    if (value && typeof value === 'string') {
+      return value
+        .trim()
+        .toLowerCase()
+        .replace(/[^\w\s-]/g, '') // Remove special characters
+        .replace(/\s+/g, '-') // Replace spaces with dashes
+        .replace(/-+/g, '-'); // Replace multiple dashes with a single dash
+    }
 
       return '';
   },[])

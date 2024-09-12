@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import dataService from '../appwrite/config'
-import { Container,Card } from '../components/index'
+import {Card } from '../components/index'
 
 function AllPosts() {
     const [posts,setPosts]=useState([])
@@ -20,17 +20,17 @@ function AllPosts() {
       }, []);
   return !loading?(
     <div className='w-full py-8'>
-        <Container>
-            <div className='flex flex-wrap'>
+      <h1 className='text-center font-poppins text-5xl'>All the posts are here</h1>
+            <div className='w-96 flex flex-wrap'>
             {posts.map((post)=>(
-                <div key={post.$id} className='p-2 w-1'>
+                <div key={post.$id} className='p-2 w-full'>
                 <Card {...post}/>
 
                 </div>
                 ))}
             </div>
          
-        </Container>
+        
     </div>
   ): (
     <div className="w-full h-full font-bold text-2xl m-2">Loading...</div>

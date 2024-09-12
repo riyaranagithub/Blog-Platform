@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 function Header() {
-  console.log("header is rendered")
+  console.log("header is rendered");
   const authStatus = useSelector((state) => state.auth.status); // Get auth status from Redux store
   const navigate = useNavigate();
   
@@ -37,12 +37,12 @@ function Header() {
   ];
 
   return (
-    <header className="bg-indigo-600 text-white">
-      <nav className="container mx-auto px-6 py-4 flex justify-between items-center">
+    <header className="bg-[#030637] text-white sticky top-0 z-50 shadow-md font-poppins">
+      <nav className="container mx-auto px-3 py-4 flex justify-between items-center">
         {/* Logo or Brand */}
         <div className="text-2xl font-bold">
           <button onClick={() => navigate("/")} className="hover:text-gray-300">
-            My Blog
+            Blog Vibe
           </button>
         </div>
 
@@ -64,7 +64,7 @@ function Header() {
 
         {/* Logout Button */}
         {authStatus && (
-          <div className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded">
+          <div className="bg-[#AD49E1] hover:bg-red-600 text-white font-bold py-2 px-4 rounded">
             <LogoutBtn />
           </div>
         )}

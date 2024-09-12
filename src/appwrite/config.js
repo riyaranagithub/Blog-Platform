@@ -16,14 +16,7 @@ export class databasesSerives {
 
   async createPost({ title, slug, content, featuredImage, status, userID }) {
     try {
-      console.log("createPost Data : ", {
-        title,
-        slug,
-        content,
-        featuredImage,
-        status,
-        userID,
-      });
+     
       return await this.databases.createDocument(
         conf.appwriteDatabaseId,
         conf.appwriteCollectionId,
@@ -35,10 +28,21 @@ export class databasesSerives {
           status,
           userID,
         }
-      );
+        
+      )
+      
+      
     } catch (error) {
       console.log("Service :: createPost :: error", error);
     }
+    console.log("createPost Data : ", {
+      title,
+      slug,
+      content,
+      featuredImage,
+      status,
+      userID,
+    });
   }
 
   async updatePost(slug, { title, content, featuredImage, status }) {
@@ -57,6 +61,7 @@ export class databasesSerives {
     } catch (error) {
       console.log("Service :: updatePost :: error", error);
     }
+    
   }
 
   async deletePost(slug) {
@@ -129,9 +134,17 @@ export class databasesSerives {
     }
   }
 
-  getImagePreview(fileId) {
-    return this.bucket.getImagePreview(conf.appwriteBucketId, fileId);
+  async getImagePreview(fileId) {
+    try {
+      // Await the promise to get the URL
+      const result = await this.bucket.getFileView(conf.appwriteBucketId, fileId);
+      return result; // result should be the URL
+    } catch (error) {
+      console.log("Error fetching image preview:", error);
+      return "fallback-image-url"; // Fallback image in case of an error
+    }
   }
+  
 
   async updateFile(fileId, file) {
     try {
