@@ -1,36 +1,55 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
 import { Button, Input } from "./index";
 import authService from "../appwrite/auth";
 import { useForm } from "react-hook-form";
 
 function SignUp() {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
   const { register, handleSubmit } = useForm();
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const signup = async (data) => {
+  const onSubmit = async (data) => {
     setError("");
+    setLoading(true);
+    
     try {
+      // Create account
       const userData = await authService.createAccount(data);
+  
       if (userData) {
-        const user = await authService.getCurrentUser();
-        if (user) dispatch(authService.login(user));
+        // Check if the user is already logged in (i.e., if a session exists)
+        const currentUser = await authService.getCurrentUser();
+        
+        if (!currentUser) {
+          // If no session exists, log in the user
+          await authService.login({
+            email: data.email,
+            password: data.password,
+          });
+        }
+        
+        // Navigate to the homepage
         navigate("/");
       }
     } catch (error) {
-      setError(error.message);
+      if (error.message.includes("session is active")) {
+        setError("A session is already active.");
+      } else {
+        setError(error.message);
+      }
+    } finally {
+      setLoading(false);
     }
   };
+  
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-50 p-4">
       <div className="w-full max-w-md bg-white rounded-lg shadow-lg p-8 border border-gray-200">
         <div className="text-center mb-6">
-          <span className="inline-block w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center text-gray-600 font-bold text-xl">
+          <span className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center text-gray-600 font-bold text-xl">
             Logo
           </span>
           <h2 className="text-3xl font-semibold mt-4">
@@ -38,24 +57,19 @@ function SignUp() {
           </h2>
           <p className="mt-2 text-base text-gray-600">
             Already have an account? &nbsp;
-            <Link
-              to="/login"
-              className="text-blue-500 hover:underline"
-            >
+            <Link to="/login" className="text-blue-500 hover:underline">
               Sign in
             </Link>
           </p>
         </div>
         {error && <p className="text-red-600 text-center mb-4">{error}</p>}
-        <form onSubmit={handleSubmit(signup)}>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <div className="space-y-4">
             <Input
               label="Name"
               placeholder="Enter your name"
               type="text"
-              {...register("name", {
-                required: "Name is required",
-              })}
+              {...register("name", { required: "Name is required" })}
             />
             <Input
               label="Email"
@@ -81,8 +95,12 @@ function SignUp() {
                 },
               })}
             />
-            <Button type="submit" className="w-full bg-blue-600 text-white hover:bg-blue-700">
-              Create Account
+            <Button
+              type="submit"
+              className={`w-full ${loading ? "bg-gray-400" : "bg-blue-600"} text-white hover:bg-blue-700`}
+              disabled={loading}
+            >
+              {loading ? "Creating Account..." : "Create Account"}
             </Button>
           </div>
         </form>
