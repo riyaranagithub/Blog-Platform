@@ -1,12 +1,11 @@
 import React from 'react';
 import { LogoutBtn } from '../index'; 
 import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom'; // Import Link
 
 function Header() {
   console.log("header is rendered");
   const authStatus = useSelector((state) => state.auth.status); // Get auth status from Redux store
-  const navigate = useNavigate();
   
   const navItems = [
     {
@@ -41,9 +40,9 @@ function Header() {
       <nav className="container mx-auto px-3 py-4 flex justify-between items-center">
         {/* Logo or Brand */}
         <div className="text-2xl font-bold">
-          <button onClick={() => navigate("/")} className="hover:text-gray-300">
+          <Link to="/" className="hover:text-gray-300">
             Blog Vibe
-          </button>
+          </Link>
         </div>
 
         {/* Navigation Links */}
@@ -51,12 +50,12 @@ function Header() {
           {navItems.map((item) =>
             item.active ? (
               <li key={item.name}>
-                <button 
-                  onClick={() => navigate(item.url)} 
+                <Link 
+                  to={item.url} 
                   className="hover:text-gray-300 transition-colors duration-300"
                 >
                   {item.name}
-                </button>
+                </Link>
               </li>
             ) : null
           )}

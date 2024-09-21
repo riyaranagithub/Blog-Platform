@@ -1,14 +1,19 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button, Input } from "./index";
 import authService from "../appwrite/auth";
 import { useForm } from "react-hook-form";
+import { useDispatch } from "react-redux";
+import { login } from "../store/authSlice";
+import { useSelector } from "react-redux";
 
 function SignUp() {
   const navigate = useNavigate();
+  const dispatch=useDispatch();
   const { register, handleSubmit } = useForm();
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+ 
 
   const onSubmit = async (data) => {
     setError("");
@@ -17,6 +22,7 @@ function SignUp() {
     try {
       // Create account
       const userData = await authService.createAccount(data);
+      console.log(userData)
   
       if (userData) {
         // Check if the user is already logged in (i.e., if a session exists)
@@ -29,7 +35,7 @@ function SignUp() {
             password: data.password,
           });
         }
-        
+        dispatch(login(userData))
         // Navigate to the homepage
         navigate("/");
       }
