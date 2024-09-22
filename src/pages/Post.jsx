@@ -4,7 +4,6 @@ import dataService from "../appwrite/config";
 import { Button } from "../components/index";
 import parse from "html-react-parser";
 import { useSelector } from "react-redux";
-import EditPost from "./EditPost";
 
 export default function Post() {
     const [post, setPost] = useState(null);
@@ -75,7 +74,7 @@ console.log(isAuthor)
                 <img
                     src={imageUrl}
                     alt={post.title}
-                    className="rounded-xl"
+                    className="rounded-xl w-96 h-96"
                 />
 
                 {isAuthor && (

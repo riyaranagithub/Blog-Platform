@@ -32,6 +32,11 @@ function Header() {
       name: "Add Post",
       url: "/add-post",
       active: authStatus
+    },
+    {
+      name: "User Post",
+      url: "/user-post",
+      active: authStatus
     }
   ];
 

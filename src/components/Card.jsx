@@ -32,8 +32,7 @@ function Card({ $id, title, featuredImage }) {
           <img 
             src={imageUrl} 
             alt={title} 
-            className='rounded-xl'
-            style={{ width: '384px', height: '384px' }} // Inline style for testing
+            className='rounded-xl w-96 h-96'
 
             onError={(e) => { e.target.src = 'fallback-image-url'; }}
           />
