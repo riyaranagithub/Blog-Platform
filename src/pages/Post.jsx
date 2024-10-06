@@ -12,11 +12,12 @@ export default function Post() {
     const navigate = useNavigate();
      
     const userData = useSelector((state) => state.auth.userData);
-    console.log(post)
-    console.log(userData)
+    console.log(post);
+    console.log(userData);
 
     const isAuthor = post && userData ? post.userID === userData.userData.$id : false;
-console.log(isAuthor)
+    console.log(isAuthor);
+
     useEffect(() => {
         let isMounted = true; // Track mounting status
 
@@ -69,18 +70,18 @@ console.log(isAuthor)
     };
 
     return post ? (
-        <div className="py-8">
-            <div className="w-full flex justify-center mb-4 relative border rounded-xl p-2">
+        <div className="py-8 max-w-2xl mx-auto">
+            <div className="w-full flex justify-center mb-6 relative border rounded-xl overflow-hidden shadow-lg">
                 <img
                     src={imageUrl}
                     alt={post.title}
-                    className="rounded-xl w-96 h-96"
+                    className="rounded-xl w-72 h-64 object-cover"
                 />
-
+                
                 {isAuthor && (
                     <div className="absolute right-6 top-6">
                         <Link to={`/edit-post/${post.$id}`}>
-                            <Button bgColor="bg-green-500" className="mr-3" >
+                            <Button bgColor="bg-green-500" className="mr-3">
                                 Edit
                             </Button>
                         </Link>
@@ -90,10 +91,10 @@ console.log(isAuthor)
                     </div>
                 )}
             </div>
-            <div className="w-full mb-6">
-                <h1 className="text-2xl font-bold">{post.title}</h1>
+            <div className="text-center mb-4">
+                <h1 className="text-3xl font-bold text-gray-800">{post.title}</h1>
             </div>
-            <div className="browser-css">
+            <div className="text-gray-700 leading-relaxed">
                 {parse(post.content)}
             </div>
         </div>

@@ -22,14 +22,25 @@ function UserPost() {
     }, []);
 
     return (
-        <div>
+        <div className="container mx-auto p-4">
+            <div className="text-center mb-8">
+    <h1 className="text-4xl sm:text-5xl font-bold text-gray-800 mb-4">
+    "Your Post Collection"
+    </h1>
+    <p className="text-lg sm:text-xl text-gray-600">
+    "Take a look at the posts you’ve written so far. Ready to add another chapter?"
+    </p>
+</div>
+
             {posts ? (
-                posts.documents.map((post) => {
-                    if (userData?.userData?.$id === post.userID) {
-                        return <Card {...post}/>;
-                    }
-                    return null; // Return null if it doesn't match
-                })
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                    {posts.documents.map((post) => {
+                        if (userData?.userData?.$id === post.userID) {
+                            return <Card key={post.$id} {...post} />;
+                        }
+                        return null; // Return null if it doesn't match
+                    })}
+                </div>
             ) : (
                 <p>Loading posts...</p>
             )}
